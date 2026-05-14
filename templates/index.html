@@ -2,20 +2,32 @@
 <html>
 <head>
     <title>CAD Copilot</title>
-
-    <!-- 🔵 CSS CONNECT -->
-    <link rel="stylesheet" href="/static/style.css">
 </head>
-
 <body>
 
-    <h2>CAD Copilot</h2>
+<h1>CAD Copilot 🤖</h1>
 
-    <input id="input" placeholder="Ask something...">
-    <button onclick="askAI()">Send</button>
+<input id="msg" placeholder="Ask something..." />
+<button onclick="send()">Send</button>
 
-    <p id="response"></p>
+<p id="reply"></p>
 
-    <script src="/static/script.js"></script>
+<script>
+async function send() {
+    let message = document.getElementById("msg").value;
+
+    let res = await fetch("/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+    });
+
+    let data = await res.json();
+    document.getElementById("reply").innerText = data.reply;
+}
+</script>
+
 </body>
 </html>
