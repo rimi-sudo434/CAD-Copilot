@@ -2,15 +2,19 @@
 <html>
 <head>
     <title>CAD Copilot</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
+
 <body>
 
-<h1>CAD Copilot 🤖</h1>
+<div class="container">
+    <h1>CAD Copilot 🤖</h1>
 
-<input id="msg" placeholder="Ask something..." />
-<button onclick="send()">Send</button>
+    <input id="msg" placeholder="Ask something..." />
+    <button onclick="send()">Send</button>
 
-<p id="reply"></p>
+    <p id="reply"></p>
+</div>
 
 <script>
 async function send() {
@@ -18,10 +22,8 @@ async function send() {
 
     let res = await fetch("/ask", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message: message })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
     });
 
     let data = await res.json();
