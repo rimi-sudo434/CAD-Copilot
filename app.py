@@ -11,7 +11,7 @@ if API_KEY:
     genai.configure(api_key=API_KEY)
 
 # Use correct model
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-1.5-pro")
 
 
 @app.route("/")
