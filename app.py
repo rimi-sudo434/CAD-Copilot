@@ -1,15 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+import requests
 import os
-import google.generativeai as genai
 
 app = Flask(__name__)
 
-API_KEY = os.getenv("GOOGLE_API_KEY")
-
-if API_KEY:
-    genai.configure(api_key=API_KEY)
-
-model = genai.GenerativeModel("gemini-pro")
+API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 @app.route("/")
 def home():
@@ -20,18 +15,36 @@ def ask():
     try:
         user_message = request.json.get("message")
 
-        if not API_KEY:
-            return jsonify({
-                "reply": "AI service is not configured yet."
-            })
+        headers = {
+            "Authorization": f"Bearer {API_KEY}",
+            "Content-Type": "application/json"
+        }
 
-        response = model.generate_content(user_message)
+        data = {
+            "model": "openai/gpt-3.5-turbo",
+            "messages": [
+                {
+                    "role": "user",
+                    "content": user_message
+                }
+            ]
+        }
+
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers=headers,
+            json=data
+        )
+
+        result = response.json()
+
+        reply = result["choices"][0]["message"]["content"]
 
         return jsonify({
-            "reply": response.text
+            "reply": reply
         })
 
     except:
         return jsonify({
-            "reply": "AI is temporarily unavailable due to quota limits. Please try again later."
+            "reply": "AI service is temporarily unavailable."
         })
