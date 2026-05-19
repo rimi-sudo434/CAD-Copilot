@@ -9,16 +9,7 @@ API_KEY = os.getenv("GOOGLE_API_KEY")
 if API_KEY:
     genai.configure(api_key=API_KEY)
 
-def get_model():
-    try:
-        return genai.GenerativeModel("gemini-2.0-flash")
-    except:
-        try:
-            return genai.GenerativeModel("gemini-1.5-flash")
-        except:
-            return genai.GenerativeModel("gemini-pro")
-
-model = get_model()
+model = genai.GenerativeModel("gemini-pro")
 
 @app.route("/")
 def home():
@@ -30,11 +21,17 @@ def ask():
         user_message = request.json.get("message")
 
         if not API_KEY:
-            return jsonify({"reply": "AI service not configured. Please try later."})
+            return jsonify({
+                "reply": "AI service is not configured yet."
+            })
 
         response = model.generate_content(user_message)
 
-        return jsonify({"reply": response.text})
+        return jsonify({
+            "reply": response.text
+        })
 
     except:
-        return jsonify({"reply": "AI is temporarily unavailable due to quota limit. Please try again later."})
+        return jsonify({
+            "reply": "AI is temporarily unavailable due to quota limits. Please try again later."
+        })
